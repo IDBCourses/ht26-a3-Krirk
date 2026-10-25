@@ -57,19 +57,24 @@ function pointerDown(event) {
 
   console.log("Pointer down at", event.clientX, event.clientY);
   synth.triggerAttack(note, Tone.now()); // play the note
-  circle.setRoundedness(0);
+  circle.setRoundedness(0); // visual feedback
 }
 
 function pointerUp(event){
   console.log("Pointer up at ", event.clientX, event.clientY);
   synth.triggerRelease(note, Tone.now()); // stop the note
-  circle.setRoundedness(1);
+  circle.setRoundedness(1); // visual feedback
 }
 
 // This moves the shape to the cursor with an offset to center it on the cursor.
 function pointerMove(event){
-  circle.setPosition(event.clientX / window.innerWidth -0.0475, event.clientY / window.innerHeight -0.0475);
+  circle.setPosition((event.clientX - 47.5) / window.innerWidth, (event.clientY - 47.5) / window.innerHeight);
   console.log("Pointer move at ", event.clientX, event.clientY); // to read that it's working
+  //event.clientX is the mouse's x position in pixels which is the amount of pixels from the left. Problem is however that
+  //the position value is supposed to be in fractions or decimals between 0 and 1. So the raw position would be >1 
+  //and the position would be way way beyond the window so by deviding by window.innerWidth, aka the width of the window in
+  // pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen. 
+  // The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
 }
 
 // ---------- Setup ----------
