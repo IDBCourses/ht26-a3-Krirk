@@ -27,7 +27,9 @@ import { createShape } from "./shape.js";
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which notes you can play, how fast things move, the tempo.
 const note = "C4"; // the note played when the pointer goes down
-
+const circle = createShape("circle"); // this used to be in the setup() but moved it here so 
+                                      // i could manipulate the shape in my functions.
+  circle.setPosition(0.5, 0.5);
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: where the pointer is, how fast it's moving, or whether a drone is on.
@@ -55,13 +57,20 @@ function pointerDown(event) {
 
   console.log("Pointer down at", event.clientX, event.clientY);
   synth.triggerAttack(note, Tone.now()); // play the note
+  circle.setRoundedness(0);
 }
 
 function pointerUp(event){
   console.log("Pointer up at ", event.clientX, event.clientY);
   synth.triggerRelease(note, Tone.now()); // stop the note
+  circle.setRoundedness(1);
 }
 
+// This moves the shape to the cursor with an offset to center it on the cursor.
+function pointerMove(event){
+  circle.setPosition(event.clientX / window.innerWidth -0.0475, event.clientY / window.innerHeight -0.0475);
+  console.log("Pointer move at ", event.clientX, event.clientY); // to read that it's working
+}
 
 // ---------- Setup ----------
 // Setup is run once, at the start of the program. It sets everything up for us!
@@ -70,12 +79,13 @@ function setup() {
   use(); // start the use loop
 
   // Example: a shape near the middle of the window. Replace it with your own.
-  const example = createShape("example");
-  example.setPosition(0.5, 0.5);
+  //const example = createShape("example");
+  //example.setPosition(0.5, 0.5);
 
   // Put your event listener code here
-  window.addEventListener("pointerdown", pointerDown);
-  window.addEventListener("pointerup", pointerUp);
+  window.addEventListener("pointerdown", pointerDown); // listening for when we press with any mousebutton or pen
+  window.addEventListener("pointerup", pointerUp); // -||- but when we release it
+  window.addEventListener("pointermove", pointerMove); // listens for when we move the pointer around
 }
 
 setup(); // Always remember to call setup()!
