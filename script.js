@@ -54,8 +54,14 @@ function pointerDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
 
   console.log("Pointer down at", event.clientX, event.clientY);
-  synth.triggerAttackRelease(note, "8n"); // play the note for an eighth note
+  synth.triggerAttack(note, Tone.now()); // play the note
 }
+
+function pointerUp(event){
+  console.log("Pointer up at ", event.clientX, event.clientY);
+  synth.triggerRelease(note, Tone.now()); // stop the note
+}
+
 
 // ---------- Setup ----------
 // Setup is run once, at the start of the program. It sets everything up for us!
@@ -69,6 +75,7 @@ function setup() {
 
   // Put your event listener code here
   window.addEventListener("pointerdown", pointerDown);
+  window.addEventListener("pointerup", pointerUp);
 }
 
 setup(); // Always remember to call setup()!
