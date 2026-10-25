@@ -33,6 +33,8 @@ const circle = createShape("circle"); // this used to be in the setup() but move
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: where the pointer is, how fast it's moving, or whether a drone is on.
+let xColor_value;
+let yColor_value;
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
@@ -54,10 +56,9 @@ function use() {
 // Runs every time the pointer goes down: a click, a tap or a pen touch.
 function pointerDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
-
   console.log("Pointer down at", event.clientX, event.clientY);
   synth.triggerAttack(note, Tone.now()); // play the note
-  circle.setRoundedness(0); // visual feedback
+  circle.setRoundedness(0.2); // visual feedback
 }
 
 function pointerUp(event){
@@ -66,8 +67,9 @@ function pointerUp(event){
   circle.setRoundedness(1); // visual feedback
 }
 
-// This moves the shape to the cursor with an offset to center it on the cursor.
+
 function pointerMove(event){
+  //-------This moves the shape to the cursor with an offset to center it on the cursor.----
   circle.setPosition((event.clientX - 47.5) / window.innerWidth, (event.clientY - 47.5) / window.innerHeight);
   console.log("Pointer move at ", event.clientX, event.clientY); // to read that it's working
   //event.clientX is the mouse's x position in pixels which is the amount of pixels from the left. Problem is however that
@@ -75,6 +77,14 @@ function pointerMove(event){
   //and the position would be way way beyond the window so by deviding by window.innerWidth, aka the width of the window in
   // pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen. 
   // The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
+
+//--------Time to change the color of the shape based on the position of the cursor. 
+xColor_value = event.clientX /window.innerWidth *330; // determins the hue based on the relative x position. goes from 0 (red) and almost loops back to 360/0 but instead 330
+yColor_value = event.clientY /window.innerHeight *50 + 20; // determines the lightness based on relative y. lightness goes from 20% --> 70%
+circle.setColour(xColor_value, 100, yColor_value, 1);
+// the inputs are h, s, l and a. determining the hue based on x position and lightness by y, saturation is 100 and opacity (a) is 1 = 100%
+
+
 }
 
 // ---------- Setup ----------
@@ -86,6 +96,8 @@ function setup() {
   // Example: a shape near the middle of the window. Replace it with your own.
   //const example = createShape("example");
   //example.setPosition(0.5, 0.5);
+
+
 
   // Put your event listener code here
   window.addEventListener("pointerdown", pointerDown); // listening for when we press with any mousebutton or pen
