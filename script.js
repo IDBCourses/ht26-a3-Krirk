@@ -35,6 +35,8 @@ const circle = createShape("circle"); // this used to be in the setup() but move
 // For example: where the pointer is, how fast it's moving, or whether a drone is on.
 let xColor_value;
 let yColor_value;
+let xPosition = [];
+let yPosition = [];
 
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
@@ -69,20 +71,54 @@ function pointerUp(event){
 
 
 function pointerMove(event){
-  //-------This moves the shape to the cursor with an offset to center it on the cursor.----
-  circle.setPosition((event.clientX - 47.5) / window.innerWidth, (event.clientY - 47.5) / window.innerHeight);
-  console.log("Pointer move at ", event.clientX, event.clientY); // to read that it's working
-  //event.clientX is the mouse's x position in pixels which is the amount of pixels from the left. Problem is however that
-  //the position value is supposed to be in fractions or decimals between 0 and 1. So the raw position would be >1 
-  //and the position would be way way beyond the window so by deviding by window.innerWidth, aka the width of the window in
-  // pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen. 
-  // The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
+    //-------This moves the shape to the cursor with an offset to center it on the cursor.----
+    circle.setPosition((event.clientX - 47.5) / window.innerWidth, (event.clientY - 47.5) / window.innerHeight);
+    //console.log("Pointer move at ", event.clientX, event.clientY); // to read that it's working
+    //event.clientX is the mouse's x position in pixels which is the amount of pixels from the left. Problem is however that
+    //the position value is supposed to be in fractions or decimals between 0 and 1. So the raw position would be >1 
+    //and the position would be way way beyond the window so by deviding by window.innerWidth, aka the width of the window in
+    // pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen. 
+    // The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
 
-//--------Time to change the color of the shape based on the position of the cursor. 
-xColor_value = event.clientX /window.innerWidth *330; // determins the hue based on the relative x position. goes from 0 (red) and almost loops back to 360/0 but instead 330
-yColor_value = event.clientY /window.innerHeight *50 + 20; // determines the lightness based on relative y. lightness goes from 20% --> 70%
-circle.setColour(xColor_value, 100, yColor_value, 1);
-// the inputs are h, s, l and a. determining the hue based on x position and lightness by y, saturation is 100 and opacity (a) is 1 = 100%
+  //--------Time to change the color of the shape based on the position of the cursor---------
+  xColor_value = event.clientX /window.innerWidth * 350; // determins the hue based on the relative x position. goes from 0 (red) and almost loops back to 360/0 but instead 350
+  yColor_value = event.clientY /window.innerHeight *50 + 20; // determines the lightness based on relative y. lightness goes from 20% --> 70%
+  circle.setColour(xColor_value, 100, yColor_value, 1);
+  // the inputs are h, s, l and a. determining the hue based on x position and lightness by y, saturation is 100 and opacity (a) is 1 = 100%
+
+  //--------Let's shrink the ball depending on how fast we move the cursor-----
+  // we probably need an array to check the current vs previous position and then ask how quickly are we moving using a^2 + b^2 = c^2
+  // if the absolute value of c, or just c^2 since that will always be positive, falls within a range then it shouldn't shirnk at all, 
+  // but if it goes beyond then maybe make it shrink ig to various degrees but not more than a certain amount, think this will require finetuning perhaps
+  xPosition.push(event.clientX/window.innerWidth);
+  yPosition.push(event.clientY/window.innerHeight);
+  let xxDiff = xPosition[xPosition.length - 1] - xPosition[xPosition.length - 2];
+  let yyDiff = yPosition[yPosition.length - 1] - yPosition[yPosition.length - 2];
+  let xSquare = (xxDiff * 10000) ** 2;
+  let ySquare = (yyDiff * 10000) ** 2;
+  let directionVector = Math.sqrt(xSquare + ySquare);
+  if (xPosition.length >= 2 && yPosition.length >= 2){
+    //console.log("the current x positionm is ", xPosition[xPosition.length - 1], ". and the previous one was ", xPosition[xPosition.length - 2], ". The difference multiplied by 1000 is: ", xxDiff*1000)
+    console.log(directionVector);
+    if (directionVector <= 4){
+      circle.setSize(100);
+    }
+    else if (directionVector <= 10){
+      circle.setSize(75);
+    }
+    else{
+      circle.setSize(25);
+    }
+  }
+  else {
+    //console.log("not enough")
+  }
+ 
+  //------- let's clean up the array as well so less memory---------------------
+ if (xPosition.length > 5 && yPosition > 5){
+  xPosition.shift;
+  yPosition.shift;
+ }
 
 
 }
