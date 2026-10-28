@@ -216,7 +216,7 @@ function pointerMove(event) {
       xPosition[xPosition.length - 1] - xPosition[xPosition.length - 2]; //sets up the difference on the x axis
     let yyDiff =
       yPosition[yPosition.length - 1] - yPosition[yPosition.length - 2]; //sets up the difference on the y axis
-    let xSquare = (xxDiff * 10000) ** 2;
+    let xSquare = (xxDiff * 10000) ** 2; //multiply by 10000 to make the numbers readable
     let ySquare = (yyDiff * 10000) ** 2;
     let directionVector = Math.sqrt(xSquare + ySquare); //pythagoras theorem
     vectorSizes.push(directionVector);
