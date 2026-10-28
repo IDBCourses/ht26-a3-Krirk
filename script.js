@@ -136,6 +136,8 @@ function updatePositionNotes(xPos, yPos) {
 // Use the state to make sound and move shapes. This is called every 100ms.
 function use() {
   setTimeout(use, 100); // call use() again in 100 milliseconds
+  //Let's check what size the shape is suppoed to be hehe
+  
 }
 
 // ---------- Controls (Event Handlers) ----------
@@ -238,10 +240,13 @@ function pointerMove(event) {
       console.log("Average: ", trueAverageSpeed);
       if (trueAverageSpeed <= 70) {
         circle.setSize(100);
+        //make size big
       } else if (trueAverageSpeed <= 150 && trueAverageSpeed >= 90) {
         circle.setSize(62.5);
+        //make size medium
       } else if (trueAverageSpeed > 170) {
         circle.setSize(25);
+        //make size small
       }
     }
   }
