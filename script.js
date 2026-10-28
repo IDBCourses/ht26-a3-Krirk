@@ -137,7 +137,7 @@ function updatePositionNotes(xPos, yPos) {
 function use() {
   setTimeout(use, 100); // call use() again in 100 milliseconds
   //Let's check what size the shape is suppoed to be hehe
-  
+
 }
 
 // ---------- Controls (Event Handlers) ----------
@@ -181,8 +181,8 @@ function pointerMove(event) {
   //event.clientX is the mouse's x position in pixels which is the amount of pixels from the left. Problem is however that
   //the position value is supposed to be in fractions or decimals between 0 and 1. So the raw position would be >1
   //and the position would be way way beyond the window so by deviding by window.innerWidth, aka the width of the window in
-  // pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen.
-  // The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
+  //pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen.
+  //The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
   
   
   //---Let's define the mouse movement-----
@@ -198,10 +198,7 @@ function pointerMove(event) {
   circle.setColour(xColor_value, 100, yColor_value, 1);
   // the inputs are h, s, l and a. determining the hue based on x position and lightness by y, saturation is 100 and opacity (a) is 1 = 100%
 
-  //--------Let's shrink the ball depending on how fast we move the cursor-----
-  // we probably need an array to check the current vs previous position and then ask how quickly are we moving using a^2 + b^2 = c^2
-  // if the absolute value of c, or just c^2 since that will always be positive, falls within a range then it shouldn't shirnk at all,
-  // but if it goes beyond then maybe make it shrink ig to various degrees but not more than a certain amount, think this will require finetuning perhaps
+
   
   //Adding the inputs into our position arrays
   xPosition.push(xInput);
@@ -234,7 +231,10 @@ function pointerMove(event) {
       //Let's get the Average length
       trueAverageSpeed = vectorSizeMeanValue / vectorSizes.length;
 
-      
+      //--------Let's shrink the ball depending on how fast we move the cursor-----
+      // we probably need an array to check the current vs previous position and then ask how quickly are we moving using a^2 + b^2 = c^2
+      // if the absolute value of c, or just c^2 since that will always be positive, falls within a range then it shouldn't shirnk at all,
+      // but if it goes beyond then maybe make it shrink ig to various degrees but not more than a certain amount, think this will require finetuning perhaps
       //console.log("the current x positionm is ", xPosition[xPosition.length - 1], ". and the previous one was ", xPosition[xPosition.length - 2], ". The difference multiplied by 1000 is: ", xxDiff*1000)
       console.log("Current vector: ", directionVector);
       console.log("Average: ", trueAverageSpeed);
@@ -250,9 +250,6 @@ function pointerMove(event) {
       }
     }
   }
-  //else {
-  //console.log("not enough")
-  //}
 }
 
 // ---------- Setup ----------
