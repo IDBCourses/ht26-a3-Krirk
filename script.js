@@ -26,10 +26,12 @@ import { createShape } from "./shape.js";
 // ---------- Settings ----------
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which notes you can play, how fast things move, the tempo.
-const note = "C4"; // the note played when the pointer goes down
+//const note = "C4"; // the note played when the pointer goes down
 const circle = createShape("circle"); // this used to be in the setup() but moved it here so
-// i could manipulate the shape in my functions.
+                                      // i could manipulate the shape in my functions.
 circle.setPosition(0.5, 0.5);
+
+
 // ---------- State ----------
 // State variables are the parts of your program that change over time.
 // For example: where the pointer is, how fast it's moving, or whether a drone is on.
@@ -43,11 +45,91 @@ let trueAverageSpeed = 0;
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
 const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // can play several notes at once
+let notes = "D";
+let octave = "2";
+let play = false;
+let decisionMade = false;
+let completeNote = "D2";
+let hasStarted = false;
+let currentCN = "";
+
+
 
 // ---------- Update ----------
 // Update the state. This is called every 100ms.
 function update() {
   setTimeout(update, 100); // call update() again in 100 milliseconds
+  
+  let newCN = completeNote;
+  
+  //Runs when play is true
+  if (play === true){
+    //Now we're checking for if play has initiated before. If so then we don't to think too much about it, just get playing!
+    if (hasStarted === false){
+    hasStarted = true;
+    synth.triggerAttack(newCN, Tone.now());
+    currentCN = newCN;
+    } 
+    //However if we have started playing, now it's interesting to think about where are we now after we initiated and should we play differently?
+    else {
+      //Let's check if we have moved anywhere by checking the notes of currentCN and newCN. If these two tell us nothing has changed, then nothing needs to happen.
+      //However should something change, that's when we need to act. Now when something changes, we stop the old note, update the note we're supposed to play to
+      //the new thing and start playing that.
+      if (currentCN !== newCN){
+        synth.triggerRelease(currentCN, Tone.now());
+        currentCN = newCN;
+        synth.triggerAttack(currentCN, Tone.now());
+      }
+    }
+  }
+  //Runs when we turned play off and resets the instrument basically
+  else if (play === false){
+    synth.triggerRelease(currentCN, Tone.now());
+    hasStarted = false;
+  }
+}
+
+//-----------Position check for notes--------
+function updatePositionNotes(xPos, yPos) {
+  //Check which note to play
+  if (xPos <= 1/7){
+    notes = "A";
+  }
+  else if (xPos > 1/7 && xPos <= 2/7){
+    notes = "B";
+  }
+  else if (xPos > 2/7 && xPos <= 3/7){
+    notes = "C";
+  }
+  else if (xPos > 3/7 && xPos <= 4/7){
+    notes = "D";
+  }
+  else if (xPos > 4/7 && xPos <= 5/7){
+    notes = "E";
+  }
+  else if (xPos > 5/7 && xPos <= 6/7){
+    notes = "F";
+  }
+  else if (xPos > 6/7){
+    notes = "G"
+  }
+
+  //Check which octave to play at
+  if (yPos <= 1/4){
+    octave = "1";
+  }
+  else if (yPos > 1/4 && yPos <= 2/4){
+    octave = "2";
+  }
+  else if (yPos > 2/4 && yPos <= 3/4){
+    octave = "3";
+  }
+  else if (yPos > 3/4){
+    octave = "4"
+  }
+
+  completeNote = notes + octave;
+  //console.log("note = " , notes, " and octave = ", octave);
 }
 
 // ---------- Use ----------
@@ -61,14 +143,30 @@ function use() {
 function pointerDown(event) {
   Tone.start(); // browsers only allow sound after the player has pressed something
   console.log("Pointer down at", event.clientX, event.clientY);
-  synth.triggerAttack(note, Tone.now()); // play the note
   circle.setRoundedness(0.2); // visual feedback
+  
+  //When we press the mouse we want the music to toggle on and off but we have to make sure that we don't accidentally loop. When we decide to start play, we don't want to
+  //accidentally loop with turning it off, so it's only on for but a moment and then goes off immediately. 
+  //if statement for if we want to initiate play
+  if (play === false && decisionMade === false){
+    play = true;
+    decisionMade = true;
+   // console.log("play is on");
+  }
+  //else if statement for if we want to initiate stop play
+  else if (play === true && decisionMade === false){
+    play = false;
+    decisionMade = true;
+   // console.log("play is off")
+  }
 }
 
 function pointerUp(event) {
   console.log("Pointer up at ", event.clientX, event.clientY);
-  synth.triggerRelease(note, Tone.now()); // stop the note
   circle.setRoundedness(1); // visual feedback
+  //turning boolean false so we can make a new decision
+  decisionMade = false;
+  //synth.triggerRelease("C4", Tone.now()); // stop the note
 }
 
 function pointerMove(event) {
@@ -83,10 +181,18 @@ function pointerMove(event) {
   //and the position would be way way beyond the window so by deviding by window.innerWidth, aka the width of the window in
   // pixels we get smaller number devided by bigger number and we get our lovely fraction that will appear on the screen.
   // The added numbers for x and y are to center the shape on the cursor no matter the size of the window.
+  
+  
+  //---Let's define the mouse movement-----
+  let xInput = event.clientX / window.innerWidth;
+  let yInput = event.clientY / window.innerHeight;
+ //----Let's send that to the function that will check what we'll play because of that--
+ updatePositionNotes(xInput, yInput);
+
 
   //--------Time to change the color of the shape based on the position of the cursor---------
-  xColor_value = (event.clientX / window.innerWidth) * 350; // determins the hue based on the relative x position. goes from 0 (red) and almost loops back to 360/0 but instead 350
-  yColor_value = (event.clientY / window.innerHeight) * 50 + 20; // determines the lightness based on relative y. lightness goes from 20% --> 70%
+  xColor_value = xInput * 350; // determins the hue based on the relative x position. goes from 0 (red) and almost loops back to 360/0 but instead 350
+  yColor_value = yInput * 50 + 20; // determines the lightness based on relative y. lightness goes from 20% --> 70%
   circle.setColour(xColor_value, 100, yColor_value, 1);
   // the inputs are h, s, l and a. determining the hue based on x position and lightness by y, saturation is 100 and opacity (a) is 1 = 100%
 
@@ -94,16 +200,19 @@ function pointerMove(event) {
   // we probably need an array to check the current vs previous position and then ask how quickly are we moving using a^2 + b^2 = c^2
   // if the absolute value of c, or just c^2 since that will always be positive, falls within a range then it shouldn't shirnk at all,
   // but if it goes beyond then maybe make it shrink ig to various degrees but not more than a certain amount, think this will require finetuning perhaps
-  xPosition.push(event.clientX / window.innerWidth);
-  yPosition.push(event.clientY / window.innerHeight);
-  //------- let's clean up the array as well so less memory---------------------
-  if (xPosition.length > 5 && yPosition.length > 5) {
+  
+  //Adding the inputs into our position arrays
+  xPosition.push(xInput);
+  yPosition.push(yInput);
+  
+  //------- let's clean up the arrays as well so less memory---------------------
+  if (xPosition.length > 2 && yPosition.length > 2) {
     xPosition.shift();
     yPosition.shift();
   }
 
   //------working out the math to determine how fast we move (roughly xd). Only interested in values we can read so that's what we're doing here.
-  if (xPosition.length >= 2 && yPosition.length >= 2) {
+  if (xPosition.length > 1 && yPosition.length > 1) {
     let xxDiff =
       xPosition[xPosition.length - 1] - xPosition[xPosition.length - 2]; //sets up the difference on the x axis
     let yyDiff =
@@ -123,17 +232,16 @@ function pointerMove(event) {
       //Let's get the Average length
       trueAverageSpeed = vectorSizeMeanValue / vectorSizes.length;
 
-      if (xPosition.length >= 5 && yPosition.length >= 5) {
-        //console.log("the current x positionm is ", xPosition[xPosition.length - 1], ". and the previous one was ", xPosition[xPosition.length - 2], ". The difference multiplied by 1000 is: ", xxDiff*1000)
-        console.log("Current vector: ", directionVector);
-        console.log("Average: ", trueAverageSpeed);
-        if (trueAverageSpeed <= 60) {
-          circle.setSize(100);
-        } else if (trueAverageSpeed <= 220 && trueAverageSpeed >= 80) {
-          circle.setSize(75);
-        } else if (trueAverageSpeed > 240) {
-          circle.setSize(25);
-        }
+      
+      //console.log("the current x positionm is ", xPosition[xPosition.length - 1], ". and the previous one was ", xPosition[xPosition.length - 2], ". The difference multiplied by 1000 is: ", xxDiff*1000)
+      console.log("Current vector: ", directionVector);
+      console.log("Average: ", trueAverageSpeed);
+      if (trueAverageSpeed <= 70) {
+        circle.setSize(100);
+      } else if (trueAverageSpeed <= 150 && trueAverageSpeed >= 90) {
+        circle.setSize(62.5);
+      } else if (trueAverageSpeed > 170) {
+        circle.setSize(25);
       }
     }
   }
