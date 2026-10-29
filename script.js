@@ -32,7 +32,7 @@ for (let i = 1; i < 4; i++) {
   linename.setRoundedness(0);
   linename.setPosition(0, i / 4);
   linename.setSize(innerWidth, 5);
-  linename.setColour(360, 100, 0, 1);
+  linename.setColour(360, 100, 0, 0.05);
 }
 //Let's do the same vertically
 for (let i = 1; i < 7; i++) {
@@ -42,7 +42,7 @@ for (let i = 1; i < 7; i++) {
   linename.setRoundedness(0);
   linename.setPosition(i / 7, 0);
   linename.setSize(5, innerHeight);
-  linename.setColour(360, 100, 0, 1);
+  linename.setColour(360, 100, 0, 0.05);
 }
 
 // ---------- Settings ----------
