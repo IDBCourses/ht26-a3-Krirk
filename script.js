@@ -105,6 +105,7 @@ function update() {
   //Runs when we turned play off and resets the instrument basically
   else if (play === false) {
     synth.triggerRelease(currentCN, Tone.now());
+    currentCN = "";
   }
 }
 
@@ -112,30 +113,30 @@ function update() {
 function updatePositionNotes(xPos, yPos) {
   //Check which note to play
   if (xPos <= 1 / 7) {
-    notes = "A";
-  } else if (xPos > 1 / 7 && xPos <= 2 / 7) {
-    notes = "B";
-  } else if (xPos > 2 / 7 && xPos <= 3 / 7) {
     notes = "C";
-  } else if (xPos > 3 / 7 && xPos <= 4 / 7) {
+  } else if (xPos > 1 / 7 && xPos <= 2 / 7) {
     notes = "D";
-  } else if (xPos > 4 / 7 && xPos <= 5 / 7) {
+  } else if (xPos > 2 / 7 && xPos <= 3 / 7) {
     notes = "E";
-  } else if (xPos > 5 / 7 && xPos <= 6 / 7) {
+  } else if (xPos > 3 / 7 && xPos <= 4 / 7) {
     notes = "F";
-  } else if (xPos > 6 / 7) {
+  } else if (xPos > 4 / 7 && xPos <= 5 / 7) {
     notes = "G";
+  } else if (xPos > 5 / 7 && xPos <= 6 / 7) {
+    notes = "A";
+  } else if (xPos > 6 / 7) {
+    notes = "B";
   }
 
   //Check which octave to play at
   if (yPos <= 1 / 4) {
-    octave = "1";
-  } else if (yPos > 1 / 4 && yPos <= 2 / 4) {
-    octave = "2";
-  } else if (yPos > 2 / 4 && yPos <= 3 / 4) {
-    octave = "3";
-  } else if (yPos > 3 / 4) {
     octave = "4";
+  } else if (yPos > 1 / 4 && yPos <= 2 / 4) {
+    octave = "3";
+  } else if (yPos > 2 / 4 && yPos <= 3 / 4) {
+    octave = "2";
+  } else if (yPos > 3 / 4) {
+    octave = "1";
   }
 
   completeNote = notes + octave;
