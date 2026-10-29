@@ -23,6 +23,28 @@
 
 import { createShape } from "./shape.js";
 
+//---------- Make 7 x 4 grid --------------
+//Let's setup the lines that will go across horizontally
+for (let i = 1; i < 4; i++) {
+  //should only run 3 times and that's it
+  let linename = "Horizontal" + i;
+  linename = createShape("rectangle");
+  linename.setRoundedness(0);
+  linename.setPosition(0, i / 4);
+  linename.setSize(innerWidth, 5);
+  linename.setColour(360, 100, 0, 1);
+}
+//Let's do the same vertically
+for (let i = 1; i < 7; i++) {
+  //should only run 6 times and that's it
+  let linename = "Vertical" + i;
+  linename = createShape("rectangle");
+  linename.setRoundedness(0);
+  linename.setPosition(i / 7, 0);
+  linename.setSize(5, innerHeight);
+  linename.setColour(360, 100, 0, 1);
+}
+
 // ---------- Settings ----------
 // Settings variables should contain all of the "fixed" parts of your programs
 // For example: which notes you can play, how fast things move, the tempo.
