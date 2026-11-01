@@ -76,7 +76,11 @@ let isMoving = false;
 let timerMoved = 0;
 // ---------- Sound ----------
 // Make the instruments and plug them into the speakers.
-const synth = new Tone.PolySynth(Tone.Synth).toDestination(); // can play several notes at once
+const synth = new Tone.PolySynth(Tone.Synth); // can play several notes at once
+const volume = new Tone.Gain(1); //setup the gain node so we can control the volume
+synth.connect(volume); // now we play the synth through volume
+volume.toDestination(); // from volume to our speakers
+let newVolume = 1;
 let notes = "D";
 let octave = "2";
 let play = false;
@@ -101,6 +105,7 @@ function update() {
       currentCN = newCN;
       synth.triggerAttack(currentCN, Tone.now());
     }
+    volume.gain.rampTo(newVolume, 0.05); // changes the volume
   }
   //Runs when we turned play off and resets the instrument basically
   else if (play === false) {
@@ -176,6 +181,7 @@ function use() {
       //after the established amount of time has passed and
       isMoving = false;
       shapeState = 0;
+      newVolume = 1;
     }
   }
 
@@ -281,8 +287,8 @@ function pointerMove(event) {
       // if the absolute value of c, or just c^2 since that will always be positive, falls within a range then it shouldn't shirnk at all,
       // but if it goes beyond then maybe make it shrink ig to various degrees but not more than a certain amount, think this will require finetuning perhaps
       //console.log("the current x positionm is ", xPosition[xPosition.length - 1], ". and the previous one was ", xPosition[xPosition.length - 2], ". The difference multiplied by 1000 is: ", xxDiff*1000)
-      console.log("Current vector: ", directionVector);
-      console.log("Average: ", trueAverageSpeed);
+      //console.log("Current vector: ", directionVector);
+      //console.log("Average: ", trueAverageSpeed);
       if (trueAverageSpeed <= 70) {
         //circle.setSize(100);
         //make size big
@@ -296,6 +302,18 @@ function pointerMove(event) {
         //make size small
         shapeState = 2;
       }
+
+      //Let's make the velocity change the volume
+      if (trueAverageSpeed > 70 && trueAverageSpeed < 170 ) {
+        newVolume = (
+          1 - (trueAverageSpeed - 70) / ((170 - 70)) * 0.75 //this makes it so we'll have a value between 1 --> 0.25, the greater the numerator, (average - 70), the smaller the returned value
+        );
+      } else if (trueAverageSpeed <= 70){
+        newVolume = 1;
+      } else if (trueAverageSpeed >= 170) {
+        newVolume = 0.25;
+      }
+      console.log (newVolume);
     }
   }
 
