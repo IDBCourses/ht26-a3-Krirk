@@ -1,22 +1,26 @@
 # My instrument
 
 **Play it here:** <!-- Paste your GitHub Pages link here, e.g. https://idbcourses.github.io/your-repo-name/ -->
-
+https://idbcourses.github.io/ht26-a3-Krirk/
 **Name:** <!-- Your name and MAU ID -->
-
+Christian Norén al2966
 <!-- One or two sentences: what kind of instrument is it, and what is it like to play? -->
-
+Once you open the page, you'll be greeted by a circle inside of a 7x4 grid. The further right you go the brighter the note is. Further up the higher the octave is. 
 ## How to play
 
 <!-- Fill in the table with a row for everything the player can do with the pointer: clicking, moving slowly or fast, moving in circles, holding still... Say what happens to the sound and to the shapes. If you added keys, give them rows too. -->
 
-| When you...  | The sound...                         | The shapes... |
-| ------------ | ------------------------------------ | ------------- |
-| Click or tap | Plays a C4 (the example: replace it) | Nothing yet   |
-|              |                                      |               |
+| When you...  --> The sound...  --> The shapes... 
+When you click --> toggles sound on or off --> shape becomes less round when you hold down and becomes circle again when you release
+
+When you move the cursor --> sound changes or stays the same depending on how fast you're moving the cursor, and where it is. The squares changes the notes and octaves while speed changes the volume from high to low --> the shape will stay the same or shrink depending on velocity + color changes depending on where we are. The shape will also follow the mouse
+
+If you were to not do anything after moving, thus perhaps stopping abruptly --> sound + shape will return to default states of big circle and 100% volume after a very short time. 
+
+
 
 <!-- Anything else a player needs to know: how to get started, a good thing to try first. -->
-
+Get started by pressing any mouse button anywhere in the page window. Stop it by pressing any such button again. Gl hf!
 ---
 
 ## About this assignment
