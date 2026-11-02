@@ -69,7 +69,7 @@ let rawX;
 
 //----------- State Shape
 circle.setPosition(0.5, 0.5); //initial position
-let shapeState = "0"; //we'll use 0 as the big state, 1 as the medium, and 2 as the big state
+let shapeState = "0"; //we'll use 0 as the big state, 1 as the medium, and 2 as the small state
 let shapeSize = 100;
 let newShapeSize = 100;
 let isMoving = false;
